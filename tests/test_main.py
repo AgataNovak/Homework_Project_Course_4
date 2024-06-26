@@ -23,14 +23,6 @@ def test_category(category_fruits):
     assert category_fruits.products == ["avocado", "banana", "dragon-fruit", "mango"]
 
 
-def test_count_categories(category_fruits):
-    assert category_fruits.count_categories() == 1
-
-
-def test_count_products(category_fruits):
-    assert category_fruits.count_products() == 4
-
-
 @pytest.fixture
 def product():
     return Product("Banana", "Mini Bananas from Panama", 2.0, 2000)

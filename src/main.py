@@ -14,17 +14,8 @@ class Category:
         self.name = name
         self.description = description
         self.products = products
-
-    def count_categories(self):
-        """Метод подсчитывающий количество категорий"""
-
-        self.counted_categories += 1
-        return self.counted_categories
-
-    def count_products(self):
-        """Метод подсчитывающий количество товаров"""
-        self.counted_products += len(self.products)
-        return self.counted_products
+        Category.counted_categories += 1
+        Category.counted_products += len(self.products)
 
 
 class Product:
@@ -42,9 +33,10 @@ class Product:
         self.cost = cost
 
 
-category_1 = Category(
-    "Fruits", "Fruits from Panama", ["avocado", "banana", "dragon-fruit", "mango"]
-)
+# category_1 = Category(
+#     "Fruits", "Fruits from Panama", ["avocado", "banana", "dragon-fruit", "mango"])
+# category_2 = Category(
+#     'Vegetables', 'Vegetables from Spain', ['tomato', 'potato', 'carrot'])
 
 
 def get_json_data(path_to_json):
