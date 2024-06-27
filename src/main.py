@@ -13,9 +13,13 @@ class Category:
     def __init__(self, name, description, products):
         self.name = name
         self.description = description
-        self.products = products
+        self.__products = products
         Category.counted_categories += 1
         Category.counted_products += len(self.products)
+
+    @property
+    def products(self):
+        return self.__products
 
 
 class Product:
@@ -30,16 +34,28 @@ class Product:
         self.name = name
         self.description = description
         self.count = count
-        self.cost = cost
+        self.__cost = cost
 
+    @classmethod
+    def new_product(cls, name, description, cost, count):
+        return cls(name, description, cost, count)
 
-# category_1 = Category(
-#     "Fruits", "Fruits from Panama", ["avocado", "banana", "dragon-fruit", "mango"])
-# category_2 = Category(
-#     'Vegetables', 'Vegetables from Spain', ['tomato', 'potato', 'carrot'])
+    @property
+    def cost(self):
+        return self.__cost
+
+    @cost.setter
+    def cost(self, cost):
+        self.__cost = cost
+
+    @cost.deleter
+    def cost(self):
+        self.__cost = None
 
 
 def get_json_data(path_to_json):
+    """Функция получения данных из JSON файла"""
+
     try:
         with open(path_to_json, "r") as json_data_file:
             data = json.load(json_data_file)
@@ -68,6 +84,7 @@ def data_to_class_category(data):
 
 def data_to_class_product(data):
     """Функция читает файл JSON и создаёт объекты класса Product"""
+
     products = []
     for dict in data:
         for i in range(len(dict["products"])):
@@ -85,3 +102,20 @@ def data_to_class_product(data):
             )
             products.append(product.display)
     return products
+
+
+# product_1 = Product('banana', 'from Panama', 25, 1500)
+# print(product_1.name)
+# print(product_1.cost)
+# print(product_1.count)
+#
+# product_2 = Product.new_product('melon', 'from Panama', 15, 2000)
+# print(product_2.name)
+# print(product_2.cost)
+# print(product_2.count)
+#
+# product_2.cost = 18
+# print(product_2.cost)
+#
+# del product_2.cost
+# print(product_2.cost)

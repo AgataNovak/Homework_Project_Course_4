@@ -3,8 +3,13 @@ from unittest.mock import patch
 
 import pytest
 
-from src.main import (Category, Product, data_to_class_category,
-                      data_to_class_product, get_json_data)
+from src.main import (
+    Category,
+    Product,
+    data_to_class_category,
+    data_to_class_product,
+    get_json_data,
+)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 path_to_json = os.path.join(current_dir, "../data", "products.json")
