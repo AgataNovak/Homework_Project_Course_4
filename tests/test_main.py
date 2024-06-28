@@ -1,8 +1,6 @@
 import os
 from unittest.mock import patch
-
 import pytest
-
 from src.main import (
     Category,
     Product,
@@ -95,6 +93,7 @@ def test_data_to_class_category(json_file):
         "QLED 4K']",
     ]
     assert data_to_class_category(json_file) == result
+
     result = []
     assert data_to_class_product([]) == result
 
@@ -161,5 +160,22 @@ def test_get_json_data(mock_load, json_file):
 
 @patch("builtins.open")
 def test_get_json_data_file_does_not_exist(mock_open):
+
     mock_open.side_effect = FileNotFoundError
     assert get_json_data("test_path") == []
+
+
+def test_new_product_bigger_price():
+
+    product_1 = Product.new_product("avocado", "green avocado from Spain", 30, 2000)
+    if product_1:
+        product_2 = Product.new_product("avocado", "green avocado from Spain", 35, 500)
+        assert (product_2.name, product_2.cost, product_2.count) == ("avocado", 35, 2500)
+
+
+def test_new_product_smaller_price():
+
+    product_1 = Product.new_product("melon", "green avocado from Spain", 30, 2000)
+    if product_1:
+        product_3 = Product.new_product("melon", "green avocado from Spain", 15, 300)
+        assert (product_3.name, product_3.cost, product_3.count) == ("melon", 30, 2300)
