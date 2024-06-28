@@ -137,3 +137,17 @@ def data_to_class_product(data):
             )
             products.append(product.display)
     return products
+
+product_1 = Product.new_product('avocado', 'from Spain', 25, 1500)
+product_2 = Product.new_product('avocado', 'from Spain', 30, 500)
+
+print(product_2.cost)
+print(product_2.count)
+
+product_3 = Product.new_product('kiwi', 'from Panama', 15, 3000)
+product_3.cost = 30
+
+print(product_3.cost)
+
+product_3.cost = 10
+print(product_3.cost)

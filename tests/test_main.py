@@ -93,6 +93,7 @@ def test_data_to_class_category(json_file):
         "QLED 4K']",
     ]
     assert data_to_class_category(json_file) == result
+
     result = []
     assert data_to_class_product([]) == result
 
