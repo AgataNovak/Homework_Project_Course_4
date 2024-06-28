@@ -100,7 +100,7 @@ def get_json_data(path_to_json):
 
 
 def data_to_class_category(data):
-    """Функция читает файл JSON и создаёт объекты класса Category"""
+    """Функция читает файл JSON, и создаёт объекты класса Category"""
 
     categories = []
     for dict in data:
@@ -118,7 +118,7 @@ def data_to_class_category(data):
 
 
 def data_to_class_product(data):
-    """Функция читает файл JSON и создаёт объекты класса Product"""
+    """Функция читает файл JSON, и создаёт объекты класса Product"""
 
     products = []
     for dict in data:
