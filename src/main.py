@@ -29,27 +29,62 @@ class Product:
     description: str
     cost: float
     count: int
+    list_of_products = []
 
     def __init__(self, name, description, cost, count):
         self.name = name
         self.description = description
         self.count = count
         self.__cost = cost
+        Product.list_of_products.append(
+            {"name": self.name, "cost": self.__cost, "count": self.count}
+        )
 
     @classmethod
     def new_product(cls, name, description, cost, count):
+        for i in range(len(Product.list_of_products)):
+            if name == Product.list_of_products[i]["name"]:
+                old_product = Product.list_of_products.pop(i)
+                if old_product["cost"] > cost:
+                    return cls(
+                        name,
+                        description,
+                        old_product["cost"],
+                        count + old_product["count"],
+                    )
+                return cls(name, description, cost, count + old_product["count"])
         return cls(name, description, cost, count)
 
     @property
     def cost(self):
+        """Функция возвращает цену выбранного экземпляра"""
+
         return self.__cost
 
     @cost.setter
     def cost(self, cost):
-        self.__cost = cost
+        """Функция принимает новую цену и присваивает её выбранному экземпляру"""
+
+        if self.__cost > cost:
+            if (
+                input(
+                    "Вы собираетесь понизить цену! Подтвердите операцию: Y-да N-нет   "
+                ).lower()
+                == "y"
+            ):
+                self.__cost = cost
+                return
+            else:
+                print("Операция изменения цены отменена.")
+                return
+        else:
+            self.__cost = cost
+            return
 
     @cost.deleter
     def cost(self):
+        """Функция удаляет свойство цены у выбранного экземпляра"""
+
         self.__cost = None
 
 
@@ -102,20 +137,3 @@ def data_to_class_product(data):
             )
             products.append(product.display)
     return products
-
-
-# product_1 = Product('banana', 'from Panama', 25, 1500)
-# print(product_1.name)
-# print(product_1.cost)
-# print(product_1.count)
-#
-# product_2 = Product.new_product('melon', 'from Panama', 15, 2000)
-# print(product_2.name)
-# print(product_2.cost)
-# print(product_2.count)
-#
-# product_2.cost = 18
-# print(product_2.cost)
-#
-# del product_2.cost
-# print(product_2.cost)
