@@ -17,6 +17,12 @@ class Category:
         Category.counted_categories += 1
         Category.counted_products += len(self.products)
 
+    def __str__(self):
+        return f"{self.name}, количество продуктов: {len(self.__products)}"
+
+    def __len__(self):
+        return len(self.__products)
+
     @property
     def products(self):
         return self.__products
@@ -39,6 +45,16 @@ class Product:
         Product.list_of_products.append(
             {"name": self.name, "cost": self.__cost, "count": self.count}
         )
+
+    def __str__(self):
+        return f"{self.name}, {self.__cost} руб. Остаток: {self.count} шт."
+
+    def __len__(self):
+        return self.count
+
+    def __add__(self, other):
+        sum_of_products = (self.__cost * self.count) + (other.__cost * other.count)
+        return sum_of_products
 
     @classmethod
     def new_product(cls, name, description, cost, count):
@@ -86,6 +102,29 @@ class Product:
         """Функция удаляет свойство цены у выбранного экземпляра"""
 
         self.__cost = None
+
+
+class EachProduct:
+    """Класс создающий итерацию по списку товаров определённой категории"""
+
+    def __init__(self, category):
+        products_quantity = len(category)
+        self.products = category.products
+        if products_quantity > 0:
+            self.stop = products_quantity
+        else:
+            raise ValueError("Список продуктов данной категории пуст или отсутствует")
+
+    def __iter__(self):
+        self.current_value = -1
+        return self
+
+    def __next__(self):
+        if self.current_value + 1 < self.stop:
+            self.current_value += 1
+            return self.products[self.current_value]
+        else:
+            raise StopIteration
 
 
 def get_json_data(path_to_json):
@@ -137,17 +176,3 @@ def data_to_class_product(data):
             )
             products.append(product.display)
     return products
-
-product_1 = Product.new_product('avocado', 'from Spain', 25, 1500)
-product_2 = Product.new_product('avocado', 'from Spain', 30, 500)
-
-print(product_2.cost)
-print(product_2.count)
-
-product_3 = Product.new_product('kiwi', 'from Panama', 15, 3000)
-product_3.cost = 30
-
-print(product_3.cost)
-
-product_3.cost = 10
-print(product_3.cost)
