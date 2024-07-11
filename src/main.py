@@ -1,178 +1,48 @@
-import json
+import os
 
+from src.class_category import Category
+from src.class_product import Product
+from src.products_categories_classes import Grass, Smartphone
+from src.utils import (EachProduct, data_to_class_category,
+                       data_to_class_product)
+from src.utils_json_data import get_json_data
 
-class Category:
-    """Класс определеяющий категории товаров"""
+path_to_json = os.path.abspath("../data/products.json")
 
-    name: str
-    description: str
-    products: list
-    counted_categories = 0
-    counted_products = 0
+json_data = get_json_data(
+    path_to_json
+)  # Получение данных о категориях и товарах из JSON файла
 
-    def __init__(self, name, description, products):
-        self.name = name
-        self.description = description
-        self.__products = products
-        Category.counted_categories += 1
-        Category.counted_products += len(self.products)
+product = Product("melon", "something about melon", 5, 1000)
+category = Category("fruits", "something about fruits", ["melon", "apples"])
 
-    def __str__(self):
-        return f"{self.name}, количество продуктов: {len(self.__products)}"
+json_categories = data_to_class_category(
+    json_data
+)  # Создание объектов классов Category и Product из данных JSON файла
+json_products = data_to_class_product(json_data)
 
-    def __len__(self):
-        return len(self.__products)
+products_iterator = EachProduct(
+    category
+)  # Создание объекта итератора при помощи класса EachProduct
+for each_category in products_iterator:
+    print(each_category)
 
-    @property
-    def products(self):
-        return self.__products
+for each_category in json_categories:  # Итерация по категориям из JSON файла
+    products_iterator = EachProduct(each_category)
+    for each_product in products_iterator:
+        print(each_product)
 
+first_smartphone = Smartphone(
+    "Xiaomi something", "something about it", 13000, 20000, "China", "X5", 128, "white"
+)
 
-class Product:
-    """Класс определяющий свойства товаров"""
+first_grass = Grass(
+    "Royal Carpet", "Something about it", 25, 1000, "Spain", 3, "Dark Green"
+)
+second_grass = Grass(
+    "Little granny", "Something about it", 5, 80000, "Belarus", 8, "Light Green"
+)
 
-    name: str
-    description: str
-    cost: float
-    count: int
-    list_of_products = []
+print(first_grass + second_grass)  # Успешное сложение товаров из одной категории
 
-    def __init__(self, name, description, cost, count):
-        self.name = name
-        self.description = description
-        self.count = count
-        self.__cost = cost
-        Product.list_of_products.append(
-            {"name": self.name, "cost": self.__cost, "count": self.count}
-        )
-
-    def __str__(self):
-        return f"{self.name}, {self.__cost} руб. Остаток: {self.count} шт."
-
-    def __len__(self):
-        return self.count
-
-    def __add__(self, other):
-        sum_of_products = (self.__cost * self.count) + (other.__cost * other.count)
-        return sum_of_products
-
-    @classmethod
-    def new_product(cls, name, description, cost, count):
-        for i in range(len(Product.list_of_products)):
-            if name == Product.list_of_products[i]["name"]:
-                old_product = Product.list_of_products.pop(i)
-                if old_product["cost"] > cost:
-                    return cls(
-                        name,
-                        description,
-                        old_product["cost"],
-                        count + old_product["count"],
-                    )
-                return cls(name, description, cost, count + old_product["count"])
-        return cls(name, description, cost, count)
-
-    @property
-    def cost(self):
-        """Функция возвращает цену выбранного экземпляра"""
-
-        return self.__cost
-
-    @cost.setter
-    def cost(self, cost):
-        """Функция принимает новую цену и присваивает её выбранному экземпляру"""
-
-        if self.__cost > cost:
-            if (
-                input(
-                    "Вы собираетесь понизить цену! Подтвердите операцию: Y-да N-нет   "
-                ).lower()
-                == "y"
-            ):
-                self.__cost = cost
-                return
-            else:
-                print("Операция изменения цены отменена.")
-                return
-        else:
-            self.__cost = cost
-            return
-
-    @cost.deleter
-    def cost(self):
-        """Функция удаляет свойство цены у выбранного экземпляра"""
-
-        self.__cost = None
-
-
-class EachProduct:
-    """Класс создающий итерацию по списку товаров определённой категории"""
-
-    def __init__(self, category):
-        products_quantity = len(category)
-        self.products = category.products
-        if products_quantity > 0:
-            self.stop = products_quantity
-        else:
-            raise ValueError("Список продуктов данной категории пуст или отсутствует")
-
-    def __iter__(self):
-        self.current_value = -1
-        return self
-
-    def __next__(self):
-        if self.current_value + 1 < self.stop:
-            self.current_value += 1
-            return self.products[self.current_value]
-        else:
-            raise StopIteration
-
-
-def get_json_data(path_to_json):
-    """Функция получения данных из JSON файла"""
-
-    try:
-        with open(path_to_json, "r") as json_data_file:
-            data = json.load(json_data_file)
-            return data
-    except FileNotFoundError:
-        return []
-
-
-def data_to_class_category(data):
-    """Функция читает файл JSON, и создаёт объекты класса Category"""
-
-    categories = []
-    for dict in data:
-        products_list = []
-        for i in range(len(dict["products"])):
-            products_list.append(dict["products"][i]["name"])
-        category = Category(dict["name"], dict["description"], products_list)
-        category.display = (
-            f"name - {category.name},"
-            f" description - {category.description},"
-            f" products: {category.products}"
-        )
-        categories.append(category.display)
-    return categories
-
-
-def data_to_class_product(data):
-    """Функция читает файл JSON, и создаёт объекты класса Product"""
-
-    products = []
-    for dict in data:
-        for i in range(len(dict["products"])):
-            product = Product(
-                dict["products"][i]["name"],
-                dict["products"][i]["description"],
-                dict["products"][i]["price"],
-                dict["products"][i]["quantity"],
-            )
-            product.display = (
-                f"name - {product.name},"
-                f"description - {product.description},"
-                f"cost - {product.cost},"
-                f"count - {product.count}"
-            )
-            products.append(product.display)
-    return products
+print(first_grass + first_smartphone)  # Ошибка сложения разных категорий
