@@ -1,13 +1,10 @@
 import os
 from unittest.mock import patch
+
 import pytest
-from src.main import (
-    Category,
-    Product,
-    data_to_class_category,
-    data_to_class_product,
-    get_json_data,
-)
+
+from src.main import (Category, EachProduct, Product, data_to_class_category,
+                      data_to_class_product, get_json_data)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 path_to_json = os.path.join(current_dir, "../data", "products.json")
@@ -20,10 +17,17 @@ def category_fruits():
     )
 
 
+@pytest.fixture()
+def empty_products_list():
+    return Category("nothing", "very nothing", [])
+
+
 def test_category(category_fruits):
     assert category_fruits.name == "Fruits"
     assert category_fruits.description == "Fruits from Panama"
     assert category_fruits.products == ["avocado", "banana", "dragon-fruit", "mango"]
+    assert str(category_fruits) == "Fruits, количество продуктов: 4"
+    assert len(category_fruits) == 4
 
 
 @pytest.fixture
@@ -31,11 +35,29 @@ def product():
     return Product("Banana", "Mini Bananas from Panama", 2.0, 2000)
 
 
-def test_product(product):
+@pytest.fixture()
+def other_product():
+    return Product("Melon", "Sweet Melon from Turkey", 13.0, 300)
+
+
+def test_product(product, other_product):
     assert product.name == "Banana"
     assert product.description == "Mini Bananas from Panama"
     assert product.cost == 2.0
     assert product.count == 2000
+    assert str(product) == "Banana, 2.0 руб. Остаток: 2000 шт."
+    assert len(product) == 2000
+    assert product + other_product == 7900.0
+
+
+def test_each_product(category_fruits, empty_products_list):
+    r = EachProduct(category_fruits)
+    assert list(r) == ["avocado", "banana", "dragon-fruit", "mango"]
+
+
+def test_each_product_empty(empty_products_list):
+    with pytest.raises(ValueError):
+        EachProduct(empty_products_list)
 
 
 @pytest.fixture
@@ -158,10 +180,7 @@ def test_get_json_data(mock_load, json_file):
     assert get_json_data(path_to_json) == result
 
 
-@patch("builtins.open")
-def test_get_json_data_file_does_not_exist(mock_open):
-
-    mock_open.side_effect = FileNotFoundError
+def test_get_json_data_file_not_found():
     assert get_json_data("test_path") == []
 
 
@@ -170,7 +189,11 @@ def test_new_product_bigger_price():
     product_1 = Product.new_product("avocado", "green avocado from Spain", 30, 2000)
     if product_1:
         product_2 = Product.new_product("avocado", "green avocado from Spain", 35, 500)
-        assert (product_2.name, product_2.cost, product_2.count) == ("avocado", 35, 2500)
+        assert (product_2.name, product_2.cost, product_2.count) == (
+            "avocado",
+            35,
+            2500,
+        )
 
 
 def test_new_product_smaller_price():
