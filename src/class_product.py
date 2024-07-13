@@ -1,4 +1,28 @@
-class Product:
+from abc import ABC, abstractmethod
+
+
+class Base(ABC):
+
+    @abstractmethod
+    def __str__(self):
+        pass
+
+    @abstractmethod
+    def __add__(self, other):
+        pass
+
+
+class MixinLog:
+
+    def __init__(self):
+        self.message = "Добавлен новый продукт"
+
+    def __repr__(self):
+        print(self.message)
+        return f"{self.__class__.__name__}('{self.name}', '{self.description}', {self.cost}, {self.count})"
+
+
+class Product(Base, MixinLog):
     """Класс определяющий свойства товаров"""
 
     name: str
@@ -14,6 +38,7 @@ class Product:
         Product.list_of_products.append(
             {"name": self.name, "cost": self.__cost, "count": self.count}
         )
+        super().__init__()
 
     def __str__(self):
         return f"{self.name}, {self.__cost} руб. Остаток: {self.count} шт."
@@ -71,3 +96,8 @@ class Product:
         """Функция удаляет свойство цены у выбранного экземпляра"""
 
         self.__cost = None
+
+
+#
+# product_1 = Product('product', 'description', 10, 20)
+# print(repr(product_1))

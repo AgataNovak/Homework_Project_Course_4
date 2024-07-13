@@ -60,10 +60,12 @@ smart = Smartphone(
     128,
     "Grey",
 )
-something_other = Grass("grass", "grass is green", 15, 13000, "Spain", 3, "dark green")
-something_other_2 = Grass(
-    "grass me", "grass is too green", 18, 13000, "Spain", 3, "dark green"
-)
+
+print(repr(smart))
+# something_other = Grass("grass", "grass is green", 15, 13000, "Spain", 3, "dark green")
+# something_other_2 = Grass(
+#     "grass me", "grass is too green", 18, 13000, "Spain", 3, "dark green"
+# )
 
 # print(type(smart))
 # print(type(something_other))
