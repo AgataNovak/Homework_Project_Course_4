@@ -1,7 +1,15 @@
+from abc import ABC
+
 from src.class_product import Product
 
 
-class Category:
+class BaseCategory(ABC):
+
+    def __str__(self):
+        pass
+
+
+class Category(BaseCategory):
     """Класс определеяющий категории товаров"""
 
     name: str
