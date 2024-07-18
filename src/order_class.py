@@ -1,4 +1,4 @@
-from src.class_category import BaseCategory
+from src.class_category import BaseCategory, ZeroCountProductsException
 
 
 class Order(BaseCategory):
@@ -6,7 +6,10 @@ class Order(BaseCategory):
 
     def __init__(self, name, count, total):
         self.name = name
-        self.count = count
+        if count > 0:
+            self.count = count
+        else:
+            raise ZeroCountProductsException
         self.total = total
 
     def __str__(self):
@@ -16,5 +19,5 @@ class Order(BaseCategory):
         )
 
 
-# order_1 = Order('product', 120, 12000)
+# order_1 = Order('product', 0, 12000)
 # print(order_1)

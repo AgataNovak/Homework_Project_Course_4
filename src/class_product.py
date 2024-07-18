@@ -33,7 +33,10 @@ class Product(Base, MixinLog):
     def __init__(self, name, description, cost, count):
         self.name = name
         self.description = description
-        self.count = count
+        if count >= 0:
+            self.count = count
+        else:
+            raise ValueError("Количество товара не может быть нулевым")
         self.__cost = cost
         Product.list_of_products.append(
             {"name": self.name, "cost": self.__cost, "count": self.count}
