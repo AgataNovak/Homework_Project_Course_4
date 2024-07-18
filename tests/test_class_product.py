@@ -55,3 +55,7 @@ def test_add_product(product, other_product):
 def test_delete_cost(product):
     del product.cost
     assert product.cost is None
+
+
+def test_len_product(product):
+    assert len(product) == 2000
